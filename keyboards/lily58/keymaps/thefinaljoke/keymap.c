@@ -288,19 +288,6 @@ static void render_anim(void) {
         oled_write_P(PSTR("| | |"), false);
         oled_write_P(PSTR("| | |"), false);
         oled_write_P(PSTR("|_|_|"), false);
-                /*
-                |    |
-                |    |
-                \---/
-                 |-|
-                 |-|
-                /---\
-                | | |
-                | | |
-                | | |
-                |_|_|
-                ")
-                */
     }
 void oled_task_user(void) {
     if (is_keyboard_master()) {
@@ -323,12 +310,31 @@ void oled_task_user(void) {
 
 #ifdef ENCODER_ENABLE
 void encoder_update_user(uint8_t index, bool clockwise) {
-    if (index == 0) { /* First encoder */
-        if (clockwise) {
+    if (index == 1) { /* First encoder */
+     switch (get_highest_layer(layer_state)) {
+        case _QWERTY:
+            if (clockwise) {
+            tap_code(KC_AUDIO_VOL_DOWN);
+            } else {
+            tap_code(KC_AUDIO_VOL_UP);
+            }
+            break;
+        case _LOWER:
+            if (clockwise) {
+                tap_code(KC_DOWN);
+                }
+            else {
+                tap_code(KC_UP);
+                }
+            break;
+        case _RAISE:
+         if (clockwise) {
             tap_code(KC_PGDN);
-        } else {
+            } else {
             tap_code(KC_PGUP);
-        }
+            }
+            break;
+    }
     }
 }
 #endif
